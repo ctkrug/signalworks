@@ -18,10 +18,14 @@ export function getBestCycles(levelId: string): number | null {
   if (raw === null) {
     return null;
   }
+  // A recorded best is always written as a plain positive-integer string, so
+  // trust only that exact form; anything else is tampered/corrupted storage
+  // and falls back to "no best" (the next PASS overwrites it cleanly).
+  if (!/^\d+$/.test(raw)) {
+    return null;
+  }
   const value = Number(raw);
-  // A recorded best is always a positive integer cycle count; reject anything
-  // else (tampered or corrupted storage) so the UI never shows a bogus best.
-  return Number.isInteger(value) && value > 0 ? value : null;
+  return value > 0 ? value : null;
 }
 
 /** Records a PASS's cycle count, keeping the lower of the new and prior best. Returns the best. */
