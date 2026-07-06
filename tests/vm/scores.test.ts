@@ -81,3 +81,22 @@ describe("scores (no localStorage available)", () => {
     expect(getBestCycles("signal-passthrough")).toBeNull();
   });
 });
+
+describe("scores (localStorage access throws)", () => {
+  afterEach(() => {
+    delete (globalThis as { localStorage?: unknown }).localStorage;
+  });
+
+  it("treats a storage getter that throws as no storage", () => {
+    // Some browsers (private mode, disabled storage) throw on any access.
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      get() {
+        throw new Error("access denied");
+      },
+    });
+    expect(() => getBestCycles("signal-passthrough")).not.toThrow();
+    expect(getBestCycles("signal-passthrough")).toBeNull();
+    expect(recordScore("signal-passthrough", 5)).toBe(5);
+  });
+});
