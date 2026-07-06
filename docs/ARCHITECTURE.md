@@ -67,6 +67,11 @@ src/
    "beat N cycles" banner — anything malformed or unknown returns `null` and
    the app falls back to its default level.
 
+The level-select overlay carries `role="dialog"`/`aria-modal`, moves focus
+to its Close button on open and back to the Levels button on close, and
+closes on Escape — the one piece of app.ts dialog behavior worth knowing
+about before extending it (e.g. adding a second overlay).
+
 ## Why the CPU wraps the program counter
 
 TIS-100-style puzzles often expect a program to loop forever, reading and
