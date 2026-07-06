@@ -100,7 +100,7 @@ that fuzz the assembler and assert the CPU always halts). See
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT license. See [`LICENSE`](LICENSE).
 
 More of Charlie's projects → https://apps.charliekrug.com
 </content>
