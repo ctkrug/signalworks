@@ -18,6 +18,16 @@ describe("assemble", () => {
     ]);
   });
 
+  it("parses a negative immediate", () => {
+    const result = assemble("MOV -5 ACC");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.program.instructions[0].operands[0]).toEqual({
+      kind: "immediate",
+      value: -5,
+    });
+  });
+
   it("parses IN routed straight to OUT", () => {
     const result = assemble("MOV IN OUT");
     expect(result.ok).toBe(true);
