@@ -1,9 +1,9 @@
 import { assemble } from "../vm/assembler";
 import { AssemblerError } from "../vm/errors";
 import { diffSessionSnapshots } from "../vm/events";
-import { LEVELS } from "../vm/levels";
+import { LEVELS, getLevel } from "../vm/levels";
 import { getBestCycles, recordScore } from "../vm/scores";
-import { encodeShareQuery } from "../vm/share";
+import { encodeShareQuery, parseShareQuery } from "../vm/share";
 import { LevelSession, type SessionSnapshot } from "../vm/session";
 import type { AssembledProgram, Level } from "../vm/types";
 import { BoardRenderer } from "../board/renderer";
@@ -45,6 +45,7 @@ export class App {
   private readonly levelSelectOverlay = el<HTMLDivElement>("level-select");
   private readonly levelSelectCloseBtn = el<HTMLButtonElement>("level-select-close");
   private readonly levelList = el<HTMLUListElement>("level-list");
+  private readonly shareTargetEl = el<HTMLParagraphElement>("share-target");
 
   private readonly renderer: BoardRenderer;
   private level: Level = LEVELS[0];
@@ -54,6 +55,7 @@ export class App {
   private runHandle: ReturnType<typeof setTimeout> | null = null;
   private nextLevelForWin: Level | null = null;
   private winBestCycles: number | null = null;
+  private sharedTarget: { levelId: string; cycles: number } | null = null;
 
   constructor() {
     this.renderer = new BoardRenderer(this.canvas);
@@ -77,7 +79,10 @@ export class App {
       }
     });
 
-    this.loadLevel(this.level);
+    const shared = parseShareQuery(window.location.search);
+    const initialLevel = shared ? getLevel(shared.levelId) : undefined;
+    this.sharedTarget = shared;
+    this.loadLevel(initialLevel ?? this.level);
     this.syncMuteButton();
   }
 
@@ -131,7 +136,17 @@ export class App {
     el<HTMLElement>("level-title").textContent = level.title;
     el<HTMLElement>("level-description").textContent = level.description;
     this.editor.value = level.starterCode;
+    this.renderShareTarget();
     this.reset();
+  }
+
+  private renderShareTarget(): void {
+    if (this.sharedTarget && this.sharedTarget.levelId === this.level.id) {
+      this.shareTargetEl.textContent = `Shared challenge: beat ${this.sharedTarget.cycles} cycles`;
+      this.shareTargetEl.hidden = false;
+    } else {
+      this.shareTargetEl.hidden = true;
+    }
   }
 
   private ensureSession(): boolean {
