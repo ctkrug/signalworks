@@ -59,6 +59,20 @@ describe("scores (with a localStorage available)", () => {
     expect(getBestCycles("signal-passthrough")).toBe(4);
     expect(getBestCycles("another-level")).toBe(20);
   });
+
+  it.each(["-5", "0", "3.5", "abc", "Infinity", "NaN", "1e3", " ", ""])(
+    "ignores a tampered stored value %j and reports no best",
+    (tampered) => {
+      localStorage.setItem("signalworks:best:signal-passthrough", tampered);
+      expect(getBestCycles("signal-passthrough")).toBeNull();
+    },
+  );
+
+  it("recovers from a tampered stored value by recording the fresh score", () => {
+    localStorage.setItem("signalworks:best:signal-passthrough", "-9");
+    expect(recordScore("signal-passthrough", 7)).toBe(7);
+    expect(getBestCycles("signal-passthrough")).toBe(7);
+  });
 });
 
 describe("scores (no localStorage available)", () => {
