@@ -4,6 +4,13 @@
   "private": true,
   "description": "A browser puzzle game where you write tiny assembly programs for in-game chips.",
   "type": "module",
+  "license": "MIT",
+  "author": "Charlie Krug",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ctkrug/signalworks.git"
+  },
+  "keywords": ["game", "puzzle", "assembly", "canvas", "typescript"],
   "engines": {
     "node": ">=18"
   },
