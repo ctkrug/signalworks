@@ -53,6 +53,14 @@ describe("diffSessionSnapshots", () => {
     expect(events).toContainEqual({ kind: "fault", message: "IN port starved: no input remaining" });
   });
 
+  it("falls back to a generic message when a fail carries no reason", () => {
+    const events = diffSessionSnapshots(
+      snap({ status: "running" }),
+      snap({ status: "fail", failReason: null }),
+    );
+    expect(events).toContainEqual({ kind: "fault", message: "run failed" });
+  });
+
   it("emits pass exactly on the transition into pass", () => {
     const events = diffSessionSnapshots(
       snap({ status: "running", outQueue: [] }),
