@@ -3,6 +3,7 @@ import { AssemblerError } from "../vm/errors";
 import { diffSessionSnapshots } from "../vm/events";
 import { LEVELS } from "../vm/levels";
 import { getBestCycles, recordScore } from "../vm/scores";
+import { encodeShareQuery } from "../vm/share";
 import { LevelSession, type SessionSnapshot } from "../vm/session";
 import type { AssembledProgram, Level } from "../vm/types";
 import { BoardRenderer } from "../board/renderer";
@@ -32,6 +33,8 @@ export class App {
   private readonly failReasonEl = el<HTMLParagraphElement>("fail-reason");
   private readonly winOverlay = el<HTMLDivElement>("win-overlay");
   private readonly winNextBtn = el<HTMLButtonElement>("win-next");
+  private readonly winShareBtn = el<HTMLButtonElement>("win-share");
+  private readonly winShareStatusEl = el<HTMLParagraphElement>("win-share-status");
   private readonly regAcc = el<HTMLElement>("reg-acc");
   private readonly regPc = el<HTMLElement>("reg-pc");
   private readonly regCycle = el<HTMLElement>("reg-cycle");
@@ -50,6 +53,7 @@ export class App {
   private session: LevelSession | null = null;
   private runHandle: ReturnType<typeof setTimeout> | null = null;
   private nextLevelForWin: Level | null = null;
+  private winBestCycles: number | null = null;
 
   constructor() {
     this.renderer = new BoardRenderer(this.canvas);
@@ -63,6 +67,7 @@ export class App {
     this.stepBtn.addEventListener("click", () => this.stepOnce());
     this.resetBtn.addEventListener("click", () => this.reset());
     this.winNextBtn.addEventListener("click", () => this.onWinNext());
+    this.winShareBtn.addEventListener("click", () => void this.onShare());
     this.muteBtn.addEventListener("click", () => this.onToggleMute());
     this.levelsBtn.addEventListener("click", () => this.openLevelSelect());
     this.levelSelectCloseBtn.addEventListener("click", () => this.closeLevelSelect());
@@ -335,7 +340,23 @@ export class App {
     this.nextLevelForWin = currentIndex >= 0 ? (LEVELS[currentIndex + 1] ?? null) : null;
     this.winNextBtn.textContent = this.nextLevelForWin ? "Next Level" : "Replay";
 
+    this.winBestCycles = getBestCycles(this.level.id) ?? best;
+    this.winShareStatusEl.textContent = "";
     this.winOverlay.hidden = false;
+  }
+
+  private async onShare(): Promise<void> {
+    if (this.winBestCycles === null) {
+      return;
+    }
+    const query = encodeShareQuery(this.level.id, this.winBestCycles);
+    const url = `${location.origin}${location.pathname}${query}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      this.winShareStatusEl.textContent = "Link copied to clipboard.";
+    } catch {
+      this.winShareStatusEl.textContent = url;
+    }
   }
 
   private hideWinOverlay(): void {
