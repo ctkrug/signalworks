@@ -49,6 +49,7 @@ export class App {
   private program: AssembledProgram | null = null;
   private session: LevelSession | null = null;
   private runHandle: ReturnType<typeof setTimeout> | null = null;
+  private nextLevelForWin: Level | null = null;
 
   constructor() {
     this.renderer = new BoardRenderer(this.canvas);
@@ -61,7 +62,7 @@ export class App {
     this.runBtn.addEventListener("click", () => this.run());
     this.stepBtn.addEventListener("click", () => this.stepOnce());
     this.resetBtn.addEventListener("click", () => this.reset());
-    this.winNextBtn.addEventListener("click", () => this.reset());
+    this.winNextBtn.addEventListener("click", () => this.onWinNext());
     this.muteBtn.addEventListener("click", () => this.onToggleMute());
     this.levelsBtn.addEventListener("click", () => this.openLevelSelect());
     this.levelSelectCloseBtn.addEventListener("click", () => this.closeLevelSelect());
@@ -237,6 +238,14 @@ export class App {
     this.renderAll();
   }
 
+  private onWinNext(): void {
+    if (this.nextLevelForWin) {
+      this.loadLevel(this.nextLevelForWin);
+    } else {
+      this.reset();
+    }
+  }
+
   private onToggleMute(): void {
     toggleMute();
     this.syncMuteButton();
@@ -321,6 +330,11 @@ export class App {
     el<HTMLElement>("win-cycles").textContent = String(snap.cycle);
     el<HTMLElement>("win-instructions").textContent = String(this.program?.instructions.length ?? 0);
     el<HTMLElement>("win-best").textContent = String(getBestCycles(this.level.id) ?? best);
+
+    const currentIndex = LEVELS.findIndex((l) => l.id === this.level.id);
+    this.nextLevelForWin = currentIndex >= 0 ? (LEVELS[currentIndex + 1] ?? null) : null;
+    this.winNextBtn.textContent = this.nextLevelForWin ? "Next Level" : "Replay";
+
     this.winOverlay.hidden = false;
   }
 
