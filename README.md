@@ -42,19 +42,23 @@ and share a score link in the time it takes to read this sentence.
 - A step debugger: Run or Step through a program, watch the signal hop
   across the board, and see live `ACC`/`PC`/cycle/IO registers with the
   current instruction highlighted in the trace panel.
-- The first puzzle, **Signal Passthrough** — route the value on `IN`
-  straight to `OUT` — with PASS/FAIL reporting, a cycle count, and an
+- 8 puzzles spanning passthrough, `ADD`/`SUB` arithmetic, and `JEZ`/`JNZ`
+  conditional routing — with PASS/FAIL reporting, a cycle count, and an
   expected-vs-actual diff on failure.
+- A level-select screen: every level as a card showing a checkmark and
+  best cycle count once solved, and the documented minimum for comparison.
 - Cycle-count golf scoring: your best cycle count for a level persists
-  across reloads via `localStorage`.
+  across reloads via `localStorage`, and the win screen's CTA advances to
+  the next level (or offers a replay on the last one).
+- A backend-free share link: copy your best score from the win overlay
+  and hand someone a URL that loads the same level with the score to
+  beat — no account, no server round-trip, and a malformed link just
+  falls back to a normal level start.
 - Synthesized WebAudio sound effects (tick/route/success/error/win —
   zero audio files) with a mute toggle that persists across reloads.
 
 ## Planned features
 
-- More puzzle levels spanning arithmetic and conditional routing.
-- A level-select screen showing pass/fail and best score per level.
-- A shareable, backend-free score link.
 - Broader accessibility and input passes (touch controls, full keyboard
   operability audit).
 
