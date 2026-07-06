@@ -104,4 +104,68 @@ describe("Cpu", () => {
     cpu.step();
     expect(cpu.snapshot()).toEqual(halted);
   });
+
+  // The assembler rejects these, but a hand-built or corrupted program must
+  // still fault cleanly rather than throw or loop — the CPU is the last guard.
+  describe("defensive faults on a hand-built program", () => {
+    it("faults on a jump to an undefined label", () => {
+      const program: AssembledProgram = {
+        instructions: [{ opcode: "JMP", operands: [{ kind: "label", name: "nowhere" }], line: 1 }],
+        labels: {},
+      };
+      const cpu = new Cpu(program, []);
+      cpu.step();
+      const snap = cpu.snapshot();
+      expect(snap.halted).toBe(true);
+      expect(snap.fault).toContain('undefined label "nowhere"');
+    });
+
+    it("faults when a jump target is not a label operand", () => {
+      const program: AssembledProgram = {
+        instructions: [{ opcode: "JMP", operands: [{ kind: "immediate", value: 3 }], line: 1 }],
+        labels: {},
+      };
+      const cpu = new Cpu(program, []);
+      cpu.step();
+      const snap = cpu.snapshot();
+      expect(snap.halted).toBe(true);
+      expect(snap.fault).toContain("jump target is not a label");
+    });
+
+    it("faults when reading from the OUT port as a source", () => {
+      const program: AssembledProgram = {
+        instructions: [
+          { opcode: "MOV", operands: [{ kind: "port", name: "OUT" }, { kind: "register", name: "ACC" }], line: 1 },
+        ],
+        labels: {},
+      };
+      const cpu = new Cpu(program, []);
+      cpu.step();
+      expect(cpu.snapshot().fault).toContain("cannot read from the OUT port");
+    });
+
+    it("faults when a label operand is used as a value", () => {
+      const program: AssembledProgram = {
+        instructions: [
+          { opcode: "ADD", operands: [{ kind: "label", name: "loop" }], line: 1 },
+        ],
+        labels: { loop: 0 },
+      };
+      const cpu = new Cpu(program, []);
+      cpu.step();
+      expect(cpu.snapshot().fault).toContain("a label cannot be used as a value");
+    });
+
+    it("faults on an invalid write destination", () => {
+      const program: AssembledProgram = {
+        instructions: [
+          { opcode: "MOV", operands: [{ kind: "immediate", value: 1 }, { kind: "port", name: "IN" }], line: 1 },
+        ],
+        labels: {},
+      };
+      const cpu = new Cpu(program, []);
+      cpu.step();
+      expect(cpu.snapshot().fault).toContain("invalid write destination");
+    });
+  });
 });
