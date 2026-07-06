@@ -40,7 +40,7 @@ export class App {
   private readonly regExpected = el<HTMLElement>("reg-expected");
 
   private readonly renderer: BoardRenderer;
-  private readonly level: Level = LEVELS[0];
+  private level: Level = LEVELS[0];
 
   private program: AssembledProgram | null = null;
   private session: LevelSession | null = null;
@@ -65,6 +65,7 @@ export class App {
   }
 
   private loadLevel(level: Level): void {
+    this.level = level;
     el<HTMLElement>("level-title").textContent = level.title;
     el<HTMLElement>("level-description").textContent = level.description;
     this.editor.value = level.starterCode;
