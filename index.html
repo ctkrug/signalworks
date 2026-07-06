@@ -31,13 +31,18 @@
   <body>
     <div id="app">
       <header class="topbar">
-        <h1 class="wordmark" aria-label="Signalworks">
-          <span data-ch>S</span><span data-ch>I</span><span data-ch>G</span
-          ><span data-ch>N</span><span data-ch>A</span><span data-ch>L</span
-          ><span data-ch>W</span><span data-ch>O</span><span data-ch>R</span
-          ><span data-ch>K</span><span data-ch>S</span>
-        </h1>
-        <p class="tagline">route signals · golf cycles · ship the fix</p>
+        <div class="topbar-row">
+          <div>
+            <h1 class="wordmark" aria-label="Signalworks">
+              <span data-ch>S</span><span data-ch>I</span><span data-ch>G</span
+              ><span data-ch>N</span><span data-ch>A</span><span data-ch>L</span
+              ><span data-ch>W</span><span data-ch>O</span><span data-ch>R</span
+              ><span data-ch>K</span><span data-ch>S</span>
+            </h1>
+            <p class="tagline">route signals · golf cycles · ship the fix</p>
+          </div>
+          <button id="levels-btn" type="button" class="btn btn-secondary">Levels</button>
+        </div>
       </header>
 
       <main class="layout">
@@ -45,6 +50,7 @@
           <div class="level-strip">
             <h2 id="level-title" class="level-title"></h2>
             <p id="level-description" class="level-description"></p>
+            <p id="share-target" class="share-target" hidden></p>
           </div>
           <div class="board-shell">
             <canvas id="board" aria-label="Signalworks circuit board"></canvas>
@@ -56,7 +62,11 @@
                   <div><dt>Instructions</dt><dd id="win-instructions">0</dd></div>
                   <div><dt>Best</dt><dd id="win-best">0</dd></div>
                 </dl>
-                <button id="win-next" type="button" class="btn btn-primary">Replay</button>
+                <div class="win-actions">
+                  <button id="win-next" type="button" class="btn btn-primary">Replay</button>
+                  <button id="win-share" type="button" class="btn btn-secondary">Copy Share Link</button>
+                </div>
+                <p id="win-share-status" class="win-share-status" role="status" aria-live="polite"></p>
               </div>
             </div>
           </div>
@@ -115,6 +125,23 @@
           </div>
         </aside>
       </main>
+
+      <div id="level-select" class="level-select-overlay" hidden>
+        <div class="level-select-card">
+          <div class="level-select-header">
+            <h2 class="level-select-heading">Levels</h2>
+            <button
+              id="level-select-close"
+              type="button"
+              class="btn btn-ghost btn-small"
+              aria-label="Close level select"
+            >
+              Close
+            </button>
+          </div>
+          <ul id="level-list" class="level-list" aria-label="Level list"></ul>
+        </div>
+      </div>
     </div>
     <script type="module" src="./src/main.ts"></script>
   </body>
