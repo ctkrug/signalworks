@@ -130,6 +130,70 @@
         </aside>
       </main>
 
+      <section class="about" aria-labelledby="about-heading">
+        <h2 id="about-heading" class="about-heading">Assembly puzzle golf, right in the browser</h2>
+        <p>
+          Signalworks is a free puzzle game in the tradition of Zachtronics titles like
+          TIS-100 and EXAPUNKS. Each level hands you a stream of numbers on an
+          <code>IN</code> port and a target sequence for the <code>OUT</code> port. You
+          write a short program in a single-accumulator assembly language to turn one into
+          the other, run it a cycle at a time, and then try to solve the same puzzle in
+          fewer cycles.
+        </p>
+        <p>
+          To play, pick a level, type your program in the editor, and press <strong>Run</strong>
+          to watch the signal travel across the board, or <strong>Step</strong> to advance one
+          instruction at a time. The registers panel shows <code>ACC</code>, the program
+          counter, the cycle count, and both ports as they change. When your output matches
+          the expected sequence the level passes and records your cycle count. Every best
+          score is saved in your browser, and the share button copies a link that challenges
+          a friend to beat it.
+        </p>
+        <p>
+          The instruction set is deliberately small: <code>MOV</code> copies a value,
+          <code>ADD</code> and <code>SUB</code> do arithmetic on the accumulator,
+          <code>JMP</code>, <code>JEZ</code>, and <code>JNZ</code> handle looping and
+          branching, and <code>NOP</code> does nothing. Labels mark jump targets. The
+          program counter wraps back to the top after the last instruction, so a one-line
+          loop keeps running until the input runs out.
+        </p>
+
+        <h3 class="about-subheading">Frequently asked questions</h3>
+        <dl class="faq">
+          <dt>Do I need to know assembly to play?</dt>
+          <dd>
+            No. The first levels are one or two instructions, and each puzzle introduces a
+            single new idea. By the later levels you are writing loops and branches, but you
+            pick them up in order.
+          </dd>
+          <dt>Is it free, and do I need an account?</dt>
+          <dd>
+            It is free with no account or sign-up. Everything runs in your browser and your
+            scores are saved locally.
+          </dd>
+          <dt>How are scores saved and shared?</dt>
+          <dd>
+            Your best cycle count for each level is stored in your browser via
+            <code>localStorage</code>. The share button builds a link that encodes the level
+            and score, so anyone who opens it sees the target to beat. No data leaves your
+            machine.
+          </dd>
+          <dt>What does cycle golfing mean?</dt>
+          <dd>
+            A cycle is one executed instruction. Two programs can produce the same output
+            while taking a different number of cycles. Golfing means finding the solution
+            that reaches the answer in the fewest cycles, which is where the real puzzle
+            lives.
+          </dd>
+          <dt>Does it work on a phone?</dt>
+          <dd>
+            The layout adapts to small screens with the board on top and the editor below.
+            Typing assembly is easier with a keyboard, but you can read, run, and step
+            through solutions on a touch device.
+          </dd>
+        </dl>
+      </section>
+
       <footer class="site-footer">
         <a
           class="footer-link"
