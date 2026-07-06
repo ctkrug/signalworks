@@ -163,12 +163,44 @@ export class BoardRenderer {
       return;
     }
 
+    this.drawBackgroundGrid();
     this.drawWires();
     this.drawPad(this.inPos(), "IN");
     this.drawPad(this.outPos(), "OUT", this.goalGlowStrength(nowMs));
     this.drawChip(nowMs);
     this.drawHops(nowMs);
     this.drawSparks(nowMs);
+  }
+
+  private drawBackgroundGrid(): void {
+    const { ctx, width, height } = this;
+    const step = 32;
+    ctx.fillStyle = `rgba(${CYAN}, 0.14)`;
+    for (let x = step; x < width; x += step) {
+      for (let y = step; y < height; y += step) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const bracket = 18;
+    const inset = 14;
+    ctx.strokeStyle = `rgba(${CYAN}, 0.3)`;
+    ctx.lineWidth = 1.5;
+    const corners: Array<[number, number, number, number]> = [
+      [inset, inset, 1, 1],
+      [width - inset, inset, -1, 1],
+      [inset, height - inset, 1, -1],
+      [width - inset, height - inset, -1, -1],
+    ];
+    for (const [x, y, dx, dy] of corners) {
+      ctx.beginPath();
+      ctx.moveTo(x + bracket * dx, y);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x, y + bracket * dy);
+      ctx.stroke();
+    }
   }
 
   private drawWires(): void {
