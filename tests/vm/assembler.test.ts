@@ -97,6 +97,28 @@ describe("assemble", () => {
     expect(result.errors[0].message).toMatch(/expects 2 operands, got 1/);
   });
 
+  it("rejects too many operands, not just too few", () => {
+    const result = assemble("MOV IN OUT OUT\n");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.errors[0].message).toMatch(/expects 2 operands, got 3/);
+  });
+
+  it("rejects operands supplied to NOP", () => {
+    const result = assemble("NOP ACC\n");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.errors[0].message).toMatch(/expects 0 operands, got 1/);
+  });
+
+  it("accepts a bare label line with no instruction after it", () => {
+    const result = assemble("start:\nMOV IN OUT\nJMP start\n");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.program.labels.start).toBe(0);
+    expect(result.program.instructions).toHaveLength(2);
+  });
+
   it("rejects an invalid destination operand", () => {
     const result = assemble("MOV 1 IN\n");
     expect(result.ok).toBe(false);
