@@ -78,6 +78,11 @@ export class App {
         this.closeLevelSelect();
       }
     });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !this.levelSelectOverlay.hidden) {
+        this.closeLevelSelect();
+      }
+    });
 
     const shared = parseShareQuery(window.location.search);
     const initialLevel = shared ? getLevel(shared.levelId) : undefined;
