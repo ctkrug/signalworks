@@ -89,10 +89,12 @@ export class App {
   private openLevelSelect(): void {
     this.renderLevelList();
     this.levelSelectOverlay.hidden = false;
+    this.levelSelectCloseBtn.focus();
   }
 
   private closeLevelSelect(): void {
     this.levelSelectOverlay.hidden = true;
+    this.levelsBtn.focus();
   }
 
   private renderLevelList(): void {
