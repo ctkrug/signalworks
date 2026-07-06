@@ -38,6 +38,10 @@ export class App {
   private readonly regIn = el<HTMLElement>("reg-in");
   private readonly regOut = el<HTMLElement>("reg-out");
   private readonly regExpected = el<HTMLElement>("reg-expected");
+  private readonly levelsBtn = el<HTMLButtonElement>("levels-btn");
+  private readonly levelSelectOverlay = el<HTMLDivElement>("level-select");
+  private readonly levelSelectCloseBtn = el<HTMLButtonElement>("level-select-close");
+  private readonly levelList = el<HTMLUListElement>("level-list");
 
   private readonly renderer: BoardRenderer;
   private level: Level = LEVELS[0];
@@ -59,9 +63,61 @@ export class App {
     this.resetBtn.addEventListener("click", () => this.reset());
     this.winNextBtn.addEventListener("click", () => this.reset());
     this.muteBtn.addEventListener("click", () => this.onToggleMute());
+    this.levelsBtn.addEventListener("click", () => this.openLevelSelect());
+    this.levelSelectCloseBtn.addEventListener("click", () => this.closeLevelSelect());
+    this.levelSelectOverlay.addEventListener("click", (event) => {
+      if (event.target === this.levelSelectOverlay) {
+        this.closeLevelSelect();
+      }
+    });
 
     this.loadLevel(this.level);
     this.syncMuteButton();
+  }
+
+  private openLevelSelect(): void {
+    this.renderLevelList();
+    this.levelSelectOverlay.hidden = false;
+  }
+
+  private closeLevelSelect(): void {
+    this.levelSelectOverlay.hidden = true;
+  }
+
+  private renderLevelList(): void {
+    this.levelList.innerHTML = "";
+    for (const level of LEVELS) {
+      const best = getBestCycles(level.id);
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = level.id === this.level.id ? "level-card current" : "level-card";
+
+      const title = document.createElement("span");
+      title.className = "level-card-title";
+      if (best !== null) {
+        const check = document.createElement("span");
+        check.className = "level-card-check";
+        check.textContent = "✓";
+        check.setAttribute("aria-hidden", "true");
+        title.appendChild(check);
+      }
+      title.appendChild(document.createTextNode(level.title));
+
+      const desc = document.createElement("span");
+      desc.className = "level-card-desc";
+      desc.textContent = level.description;
+
+      const meta = document.createElement("span");
+      meta.className = "level-card-meta";
+      meta.innerHTML = `<span>Best: <strong>${best !== null ? best : "—"}</strong></span><span>Min: <strong>${level.minCycles}</strong></span>`;
+
+      card.append(title, desc, meta);
+      card.addEventListener("click", () => {
+        this.closeLevelSelect();
+        this.loadLevel(level);
+      });
+      this.levelList.appendChild(card);
+    }
   }
 
   private loadLevel(level: Level): void {
