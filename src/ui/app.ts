@@ -89,8 +89,13 @@ export class App {
       }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !this.levelSelectOverlay.hidden) {
+      if (this.levelSelectOverlay.hidden) {
+        return;
+      }
+      if (event.key === "Escape") {
         this.closeLevelSelect();
+      } else if (event.key === "Tab") {
+        this.trapDialogFocus(event);
       }
     });
 
@@ -110,6 +115,26 @@ export class App {
   private closeLevelSelect(): void {
     this.levelSelectOverlay.hidden = true;
     this.levelsBtn.focus();
+  }
+
+  /** Keeps Tab focus inside the open level-select dialog (a modal must not leak focus behind it). */
+  private trapDialogFocus(event: KeyboardEvent): void {
+    const focusables = this.levelSelectOverlay.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusables.length === 0) {
+      return;
+    }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   private renderLevelList(): void {
