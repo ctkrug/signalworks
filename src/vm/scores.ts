@@ -19,7 +19,9 @@ export function getBestCycles(levelId: string): number | null {
     return null;
   }
   const value = Number(raw);
-  return Number.isFinite(value) ? value : null;
+  // A recorded best is always a positive integer cycle count; reject anything
+  // else (tampered or corrupted storage) so the UI never shows a bogus best.
+  return Number.isInteger(value) && value > 0 ? value : null;
 }
 
 /** Records a PASS's cycle count, keeping the lower of the new and prior best. Returns the best. */
