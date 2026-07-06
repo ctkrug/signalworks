@@ -126,10 +126,17 @@
         </aside>
       </main>
 
-      <div id="level-select" class="level-select-overlay" hidden>
+      <div
+        id="level-select"
+        class="level-select-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="level-select-heading"
+        hidden
+      >
         <div class="level-select-card">
           <div class="level-select-header">
-            <h2 class="level-select-heading">Levels</h2>
+            <h2 id="level-select-heading" class="level-select-heading">Levels</h2>
             <button
               id="level-select-close"
               type="button"
