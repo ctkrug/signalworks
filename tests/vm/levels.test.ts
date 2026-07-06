@@ -21,6 +21,14 @@ describe("LEVELS", () => {
       expect(level.minCycles).toBeGreaterThan(0);
     }
   });
+
+  it("keeps the wow-moment passthrough level first, as the new-player default", () => {
+    expect(LEVELS[0].id).toBe("signal-passthrough");
+  });
+
+  it("has at least 8 levels", () => {
+    expect(LEVELS.length).toBeGreaterThanOrEqual(8);
+  });
 });
 
 describe("getLevel", () => {
