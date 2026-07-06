@@ -1,9 +1,8 @@
 /**
  * Core instruction-set types for the Signalworks VM.
  *
- * The assembler and CPU (built out in the next phase) both target this
- * shape, so the instruction set is defined once, as data, rather than
- * scattered across parser and executor code.
+ * The assembler and CPU both target this shape, so the instruction set is
+ * defined once, as data, rather than scattered across parser and executor code.
  */
 
 export type Opcode =
@@ -31,4 +30,21 @@ export interface Instruction {
 export interface AssembledProgram {
   instructions: Instruction[];
   labels: Record<string, number>;
+}
+
+/**
+ * A puzzle definition: pure data (input stream, expected output, a documented
+ * minimum cycle count) so adding a level never touches the assembler, CPU, or
+ * renderer.
+ */
+export interface Level {
+  id: string;
+  title: string;
+  description: string;
+  input: readonly number[];
+  expectedOutput: readonly number[];
+  /** The best possible cycle count for this level, shown for score comparison. */
+  minCycles: number;
+  maxCycles?: number;
+  starterCode: string;
 }
