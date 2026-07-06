@@ -19,6 +19,15 @@ function el<T extends HTMLElement>(id: string): T {
   return node as T;
 }
 
+/** Builds a `<span>Label: <strong>value</strong></span>` node without touching innerHTML. */
+function metaEntry(label: string, value: string): HTMLSpanElement {
+  const span = document.createElement("span");
+  const strong = document.createElement("strong");
+  strong.textContent = value;
+  span.append(`${label}: `, strong);
+  return span;
+}
+
 /** Wires the DOM to the VM: assembling, stepping, and reflecting every result back into the page. */
 export class App {
   private readonly canvas = el<HTMLCanvasElement>("board");
@@ -133,7 +142,10 @@ export class App {
 
       const meta = document.createElement("span");
       meta.className = "level-card-meta";
-      meta.innerHTML = `<span>Best: <strong>${best !== null ? best : "—"}</strong></span><span>Min: <strong>${level.minCycles}</strong></span>`;
+      meta.append(
+        metaEntry("Best", best !== null ? String(best) : "—"),
+        metaEntry("Min", String(level.minCycles)),
+      );
 
       card.append(title, desc, meta);
       card.addEventListener("click", () => {
