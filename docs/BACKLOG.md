@@ -31,25 +31,30 @@ it must be reachable before anything else in this document is built.
 
 ## Epic 2 — Puzzle content and progression
 
-- [ ] **Data-driven puzzle format**
+- [x] **Data-driven puzzle format**
   - AC: adding a new puzzle requires only a new data object (input stream,
     expected output stream, node/register budget) — no changes to the
     assembler, CPU, or renderer.
   - AC: a newly added puzzle object appears in the level-select list without
     further wiring.
-- [ ] **8+ levels of increasing difficulty**
+- [x] **8+ levels of increasing difficulty**
   - AC: at least 8 distinct puzzle definitions exist, spanning pass-through,
     arithmetic (`ADD`/`SUB`), and conditional routing (`JEZ`/`JNZ`).
   - AC: each level's data includes a documented minimum cycle count used
     later for score comparison.
-- [ ] **Level select with pass/fail and best-score tracking**
+  - Verified by `tests/vm/levels-solutions.test.ts`: a known solution per
+    level runs to completion and must pass in exactly its `minCycles`.
+- [x] **Level select with pass/fail and best-score tracking**
   - AC: a completed level shows a checkmark and the player's best cycle
     count.
   - AC: best scores persist across a full page reload via `localStorage`.
-- [ ] **Design polish — level select and editor states**
+- [x] **Design polish — level select and editor states**
   - AC: level select, editor, and board share the tokens in
     `docs/DESIGN.md` and pass its D3 self-review checklist at 390/768/1440
     widths.
+  - Verified live at 390/768/1440 via a headless-browser pass (level select,
+    win overlay, and share flow all screenshot-checked; no horizontal
+    scroll or console errors).
 
 ## Epic 3 — Scoring and sharing
 
@@ -57,18 +62,22 @@ it must be reachable before anything else in this document is built.
   - AC: on PASS, the score (cycles taken) displays immediately.
   - AC: a PASS with a lower cycle count than the stored best updates the
     "best" record for that level.
-- [ ] **Shareable, backend-free score link**
+- [x] **Shareable, backend-free score link**
   - AC: copying the share link and opening it in a fresh/incognito tab
     shows the same level and score without any network request to a
     Signalworks-owned server.
   - AC: a malformed or tampered share link falls back to a normal level
     start rather than crashing.
+  - Implemented as a `?level=&score=` query string (`src/vm/share.ts`);
+    verified end-to-end (copy → open in a fresh page → same level and a
+    "beat N cycles" banner) plus a malformed/unknown-level link falling
+    back to the default level.
 - [x] **Win celebration screen**
   - AC: passing a level shows an overlay with cycle count, instruction
     count, and a single "Next Level" call to action.
-  - Note: with only one level shipped so far, the CTA reads "Replay"
-    (it resets the same level) rather than "Next Level" — it becomes
-    "Next Level" once Epic 2 adds a second level to advance to.
+  - Now that Epic 2 shipped 7 more levels, the CTA reads "Next Level" and
+    advances to the next roster entry, falling back to "Replay" only on
+    the last level.
 
 ## Epic 4 — Polish, audio, and accessibility
 
