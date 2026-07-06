@@ -59,4 +59,10 @@ describe("parseShareQuery", () => {
       cycles: 2,
     });
   });
+
+  it("rejects a score so large it overflows to Infinity", () => {
+    const huge = "9".repeat(400);
+    expect(Number(huge)).toBe(Infinity);
+    expect(parseShareQuery(`?level=signal-passthrough&score=${huge}`)).toBeNull();
+  });
 });
