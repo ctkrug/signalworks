@@ -33,30 +33,53 @@ and share a score link in the time it takes to read this sentence.
   Beat your own best, then copy a link that encodes your score to challenge
   someone else — no account, no server round-trip required.
 
+## Playable now
+
+- A single-pass assembler (`MOV`, `ADD`, `SUB`, `JMP`, `JEZ`, `JNZ`, `NOP`,
+  labels, `IN`/`OUT` ports) with line-numbered, collected error reporting.
+- A cycle-accurate CPU: one instruction per step, deterministic output,
+  a documented step limit instead of a silent infinite loop.
+- A step debugger: Run or Step through a program, watch the signal hop
+  across the board, and see live `ACC`/`PC`/cycle/IO registers with the
+  current instruction highlighted in the trace panel.
+- The first puzzle, **Signal Passthrough** — route the value on `IN`
+  straight to `OUT` — with PASS/FAIL reporting, a cycle count, and an
+  expected-vs-actual diff on failure.
+- Cycle-count golf scoring: your best cycle count for a level persists
+  across reloads via `localStorage`.
+- Synthesized WebAudio sound effects (tick/route/success/error/win —
+  zero audio files) with a mute toggle that persists across reloads.
+
 ## Planned features
 
-- A minimal, documented instruction set and single-pass assembler with
-  line-numbered error reporting.
-- A cycle-accurate CPU core with deterministic step/run/reset semantics.
-- A visual step debugger: active-instruction highlighting, live registers,
-  and animated signal traces between chips.
-- A level format that's pure data, so new puzzles don't require new code.
-- Cycle-count golf scoring with a shareable, self-contained score link.
-- Synthesized WebAudio sound effects (no audio files) with a persistent
-  mute toggle.
-- A fully responsive board and editor, playable on desktop or phone.
+- More puzzle levels spanning arithmetic and conditional routing.
+- A level-select screen showing pass/fail and best score per level.
+- A shareable, backend-free score link.
+- Broader accessibility and input passes (touch controls, full keyboard
+  operability audit).
 
 ## Stack
 
 TypeScript, the HTML Canvas API, and [Vite](https://vitejs.dev/) for a
 static, dependency-light build with no backend. [Vitest](https://vitest.dev/)
-covers the assembler and CPU core. The production build is a single static
-`dist/` directory that can be hosted from any subpath.
+covers the assembler, CPU, session, and scoring logic. The production build
+is a single static `dist/` directory that can be hosted from any subpath.
+
+## Getting started
+
+```sh
+npm install
+npm run dev      # local dev server
+npm test         # run the test suite
+npm run build    # type-check + production build to dist/
+```
 
 ## Status
 
-Early scope-and-plan stage. See [`docs/VISION.md`](docs/VISION.md) for the
-full design and [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
+Core VM and the first playable puzzle are done — see
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how the pieces fit
+together, [`docs/VISION.md`](docs/VISION.md) for the full design, and
+[`docs/BACKLOG.md`](docs/BACKLOG.md) for what's left.
 
 ## License
 
