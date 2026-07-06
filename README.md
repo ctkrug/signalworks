@@ -1,5 +1,8 @@
 # Signalworks
 
+[![CI](https://github.com/ctkrug/signalworks/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/signalworks/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A browser puzzle game about writing tiny assembly programs for in-game chips.
 Route signals from input to output, satisfy the test cases, and golf your
 cycle count down as low as it'll go — then share your score.
