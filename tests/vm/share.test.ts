@@ -48,4 +48,15 @@ describe("parseShareQuery", () => {
   it("ignores a tampered score with trailing garbage", () => {
     expect(parseShareQuery("?level=signal-passthrough&score=3abc")).toBeNull();
   });
+
+  it("returns null for a decimal score", () => {
+    expect(parseShareQuery("?level=signal-passthrough&score=3.5")).toBeNull();
+  });
+
+  it("ignores unrelated params alongside a valid level and score", () => {
+    expect(parseShareQuery("?utm_source=friend&level=double-take&score=2&ref=chat")).toEqual({
+      levelId: "double-take",
+      cycles: 2,
+    });
+  });
 });
