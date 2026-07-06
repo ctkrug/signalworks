@@ -77,6 +77,16 @@ describe("Cpu", () => {
     expect(snap.outQueue).toEqual([1]);
   });
 
+  it("faults when SUB reads IN with nothing left in the queue", () => {
+    const cpu = new Cpu(assembleOrThrow("SUB IN\nSUB IN\n"), [4]);
+    cpu.step();
+    cpu.step();
+    const snap = cpu.snapshot();
+    expect(snap.halted).toBe(true);
+    expect(snap.fault).toContain("IN port starved");
+    expect(snap.acc).toBe(-4);
+  });
+
   it("produces identical output and cycle counts across repeated runs (determinism)", () => {
     const run = () => {
       const cpu = new Cpu(assembleOrThrow("MOV IN OUT\nMOV IN OUT\n"), [3, 9]);

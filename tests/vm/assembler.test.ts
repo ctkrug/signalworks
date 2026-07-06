@@ -111,6 +111,14 @@ describe("assemble", () => {
     expect(result.errors[0].message).toContain("already defined");
   });
 
+  it("rejects a label whose name is not a valid identifier", () => {
+    const result = assemble("1bad: NOP\n");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.errors[0].message).toContain('invalid label name "1bad"');
+    expect(result.errors[0].line).toBe(1);
+  });
+
   it("collects multiple independent errors in one pass", () => {
     const result = assemble("HALT\nSTOP\n");
     expect(result.ok).toBe(false);
