@@ -45,6 +45,7 @@ export class App {
   private readonly levelSelectOverlay = el<HTMLDivElement>("level-select");
   private readonly levelSelectCloseBtn = el<HTMLButtonElement>("level-select-close");
   private readonly levelList = el<HTMLUListElement>("level-list");
+  private readonly levelSelectProgress = el<HTMLParagraphElement>("level-select-progress");
   private readonly shareTargetEl = el<HTMLParagraphElement>("share-target");
 
   private readonly renderer: BoardRenderer;
@@ -104,10 +105,15 @@ export class App {
 
   private renderLevelList(): void {
     this.levelList.innerHTML = "";
+    const solvedCount = LEVELS.filter((level) => getBestCycles(level.id) !== null).length;
+    this.levelSelectProgress.textContent = `${solvedCount} / ${LEVELS.length} solved`;
     for (const level of LEVELS) {
       const best = getBestCycles(level.id);
       const card = document.createElement("button");
       card.type = "button";
+      if (level.id === this.level.id) {
+        card.setAttribute("aria-current", "true");
+      }
       card.className = level.id === this.level.id ? "level-card current" : "level-card";
 
       const title = document.createElement("span");
