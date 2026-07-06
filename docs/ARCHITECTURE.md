@@ -19,15 +19,19 @@ src/
                      the level's expected output after every step
     events.ts        diffSessionSnapshots(): pure diff of two SessionSnapshots
                      into the presentation events the UI/audio layer needs
-    levels.ts        the level roster (pure data)
+    levels.ts        the level roster (pure data) — 8 levels spanning
+                     passthrough, ADD/SUB arithmetic, and JEZ/JNZ routing
     scores.ts        best-cycle-count persistence (localStorage, per level)
+    share.ts         encode/decode a `?level=&score=` query string for
+                     backend-free score links
   audio/
     sfx.ts           WebAudio-synthesized SFX + mute state (localStorage)
   board/
     renderer.ts      canvas rendering: chip/wires/hops/fault/goal/win, driven
                      by explicit event calls, not inferred from state
   ui/
-    app.ts           DOM glue: wires buttons/editor/panels to the VM layer
+    app.ts           DOM glue: wires buttons/editor/panels to the VM layer,
+                     the level-select overlay, and share-link copy/parse
   main.ts            bootstraps App
 ```
 
@@ -51,7 +55,17 @@ src/
    there's no browser test harness in this repo).
 4. **Score it.** On PASS, `recordScore(level.id, cycles)` keeps the lower of
    the new and previously-stored best in `localStorage` and returns it for
-   the win overlay.
+   the win overlay. The win overlay's CTA reads `LEVELS` for the entry after
+   the current one and advances to it ("Next Level"), or offers "Replay" on
+   the last level.
+5. **Select or share a level.** The Levels button renders one card per
+   `LEVELS` entry (checkmark + best from `scores.ts`, plus the documented
+   minimum) and `loadLevel()` on click. Separately, `share.ts` turns a level
+   id + cycle count into a `?level=&score=` query string; `App` parses
+   `location.search` on boot via `parseShareQuery()` and, if it names a real
+   level with a valid positive-integer score, loads that level and shows a
+   "beat N cycles" banner — anything malformed or unknown returns `null` and
+   the app falls back to its default level.
 
 ## Why the CPU wraps the program counter
 
