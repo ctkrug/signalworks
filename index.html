@@ -39,12 +39,82 @@
         </h1>
         <p class="tagline">route signals · golf cycles · ship the fix</p>
       </header>
-      <main class="board-shell">
-        <canvas id="board" aria-label="Signalworks circuit board preview"></canvas>
+
+      <main class="layout">
+        <section class="board-pane">
+          <div class="level-strip">
+            <h2 id="level-title" class="level-title"></h2>
+            <p id="level-description" class="level-description"></p>
+          </div>
+          <div class="board-shell">
+            <canvas id="board" aria-label="Signalworks circuit board"></canvas>
+            <div id="win-overlay" class="win-overlay" hidden>
+              <div class="win-card">
+                <p class="win-heading">PASS</p>
+                <dl class="win-stats">
+                  <div><dt>Cycles</dt><dd id="win-cycles">0</dd></div>
+                  <div><dt>Instructions</dt><dd id="win-instructions">0</dd></div>
+                  <div><dt>Best</dt><dd id="win-best">0</dd></div>
+                </dl>
+                <button id="win-next" type="button" class="btn btn-primary">Replay</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-pane">
+          <div class="panel editor-panel">
+            <div class="panel-header">
+              <span>Program</span>
+              <button
+                id="mute-toggle"
+                type="button"
+                class="btn btn-ghost btn-small"
+                aria-pressed="false"
+              >
+                Sound: On
+              </button>
+            </div>
+            <textarea
+              id="editor"
+              class="editor"
+              spellcheck="false"
+              autocapitalize="off"
+              autocomplete="off"
+              aria-label="Assembly program editor"
+            ></textarea>
+            <ul id="errors" class="error-list" hidden></ul>
+            <div class="controls">
+              <button id="run-btn" type="button" class="btn btn-primary">Run</button>
+              <button id="step-btn" type="button" class="btn btn-secondary">Step</button>
+              <button id="reset-btn" type="button" class="btn btn-ghost">Reset</button>
+            </div>
+          </div>
+
+          <div class="panel listing-panel">
+            <div class="panel-header"><span>Trace</span></div>
+            <ol id="listing" class="listing" aria-label="Program listing with current instruction"></ol>
+          </div>
+
+          <div class="panel registers-panel">
+            <div class="panel-header">
+              <span>Registers</span>
+              <span id="status-badge" class="status-badge status-idle" role="status" aria-live="polite"
+                >IDLE</span
+              >
+            </div>
+            <dl class="registers">
+              <div><dt>ACC</dt><dd id="reg-acc">0</dd></div>
+              <div><dt>PC</dt><dd id="reg-pc">0</dd></div>
+              <div><dt>CYCLE</dt><dd id="reg-cycle">0</dd></div>
+              <div><dt>IN left</dt><dd id="reg-in">0</dd></div>
+              <div><dt>OUT</dt><dd id="reg-out">—</dd></div>
+              <div><dt>Expected</dt><dd id="reg-expected">—</dd></div>
+            </dl>
+            <p id="fail-reason" class="fail-reason" hidden></p>
+          </div>
+        </aside>
       </main>
-      <footer class="statusline">
-        <span id="boot-status">booting the board&hellip;</span>
-      </footer>
     </div>
     <script type="module" src="./src/main.ts"></script>
   </body>
