@@ -85,10 +85,21 @@ run deterministically).
 ## Testing approach
 
 - `vm/` and `audio/sfx.ts` are unit tested (`tests/`) — pure logic and
-  DOM-free state, so no browser is required to run `npm test`.
+  DOM-free state, so no browser is required to run `npm test`. Coverage on
+  `vm/` sits at ~98% lines; the defensive CPU fault paths the assembler
+  makes unreachable are exercised via hand-built programs.
+- `tests/vm/properties.test.ts` adds fast-check property tests: tokenizer
+  invariants, immediate round-trips, blank-line insensitivity, passthrough
+  and running-sum reproduction over random streams, and a fuzzer asserting
+  the CPU never throws or fails to halt on arbitrary assembled source.
 - `board/renderer.ts` and `ui/app.ts` are DOM/canvas glue with no unit
-  tests; they're verified by manually driving the built app (see the
-  design standard's D3 self-review) rather than mocking `HTMLCanvasElement`.
+  tests; they're verified by driving the built app in headless Chromium
+  (the design standard's D3 self-review) rather than mocking `HTMLCanvasElement`.
+
+The level-select dialog additionally **traps Tab focus** (wraps between its
+Close button and the last level card) on top of the open/close focus
+management and Escape-to-close, so a keyboard user can't tab out to the
+controls behind the modal overlay.
 
 ## Running it
 
